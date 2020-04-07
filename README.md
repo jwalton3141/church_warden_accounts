@@ -10,7 +10,7 @@ directory. For `run_me.py` to find the Access Database correctly, `run_me.py`
 must be located one directory deeper than the database. An example directory
 set up for this project could look like the following:
 
-`
+```
 .
 ├── CWAs_F.accdb
 └── python
@@ -22,7 +22,7 @@ set up for this project could look like the following:
     │   └── read_data.py
     └── tools
         └── pds_calc.py
-`
+```
 
 ## Microsoft drivers
 
