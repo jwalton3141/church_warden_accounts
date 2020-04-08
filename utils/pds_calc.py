@@ -5,7 +5,6 @@ This script is intended to make it easier to sum up monies detailed in pounds,
 shillings and pence.
 """
 
-import numpy as np
 import pandas as pd
 import sys
 
