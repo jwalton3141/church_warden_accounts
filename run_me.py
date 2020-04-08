@@ -19,9 +19,9 @@ def main():
 
 
 def plot_data(data):
-    plot.annual_funeral_spends(data)
-    plot.primary_category_spends(data)
-    plot.total_annual_spends(data)
+    plot.funeral_costs(data)
+    plot.primary_categories(data)
+    plot.annual_totals(data)
 
 
 if __name__ == "__main__":
