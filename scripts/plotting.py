@@ -92,6 +92,20 @@ def annual_total(data):
     tabulate_summary(groupby, 'total_expenditure.txt')
 
 
+def perambulation_costs(data):
+    data = make_year_col(data)
+
+    perambulation = data[data['Standardized_Category'] == 'Perambulation']
+
+    perambulation_groupby = perambulation.groupby(['Parish_Name',
+                                                   'Year']).sum()
+    perambulation_groupby = total_from_pds(perambulation_groupby)
+
+    plot_parishes(perambulation_groupby.Total, perambulation_plot)
+
+    tabulate_summary(perambulation_groupby, 'perambulation.txt')
+
+
 def savefig(fig, plot_base, parish, **kwargs):
     fig.tight_layout()
     file_name = os.path.join('output', '{}_{}.png'.format(plot_base, parish))
@@ -101,6 +115,8 @@ def savefig(fig, plot_base, parish, **kwargs):
 def funeral_costs_plot(fig, ax, data, parish):
     ax.plot(data.loc[parish].reset_index().Year,
             data.loc[parish])
+    ax.scatter(data.loc[parish].reset_index().Year,
+               data.loc[parish])
 
     ax.set_title('{}: funeral expenditure as a '
                  'percentage of total expenditure.'.format(parish))
@@ -128,10 +144,24 @@ def primary_categories_plot(fig, ax, data, parish):
 
 def annual_total_plot(fig, ax, data, parish):
     ax.plot(data.loc[parish].reset_index().Year, data.loc[parish, 'Total'])
+    ax.scatter(data.loc[parish].reset_index().Year, data.loc[parish, 'Total'])
 
     ax.set_title(parish + ': total annual expenditure')
     ax.set_xlabel('Year')
     ax.set_ylabel('Expenditure in pence')
 
     savefig(fig, 'total_expenditure', parish, bbox_inches='tight')
+
+
+def perambulation_plot(fig, ax, data, parish): 
+    ax.plot(data.loc[parish].reset_index().Year,
+            data.loc[parish])
+    ax.scatter(data.loc[parish].reset_index().Year,
+               data.loc[parish])
+
+    ax.set_title('{}: Annual perambulation expenditure'.format(parish))
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Expenditure in pence')
+
+    savefig(fig, 'perambulation_expenditure', parish, bbox_inches='tight')
 

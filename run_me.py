@@ -22,6 +22,7 @@ def plot_data(data):
     plot.funeral_costs(data)
     plot.primary_categories(data)
     plot.annual_totals(data)
+    plot.perambulation_costs(data)
 
 
 if __name__ == "__main__":
