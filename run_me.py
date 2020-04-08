@@ -10,11 +10,19 @@ This script and all subsequent scripts will never alter the accdb file.
 from utils.read_data import accdb2pkl
 import scripts.plotting as plot
 
-if __name__ == "__main__":
+
+def main():
     accdb = accdb2pkl()
 
     data = accdb["Disbursements"]
+    plot_data(data)
 
+
+def plot_data(data):
     plot.annual_funeral_spends(data)
     plot.primary_category_spends(data)
     plot.total_annual_spends(data)
+
+
+if __name__ == "__main__":
+    main()
