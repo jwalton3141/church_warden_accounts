@@ -3,115 +3,135 @@
 import matplotlib.pyplot as plt
 import os
 
-import utils.df_tools as df
+from utils.df_tools import total_from_pds, tidy_pds, make_year_col
 
+
+plt.style.use('seaborn')
 plt.rcParams['text.usetex'] = False
 
-def annual_funeral_spends(data):
-    """
-    Plot the annual funeral expenditure for each parish, as a percentage of total annual
-    expenditure.
-    """
-    data = df.make_year_col(data)
+# If running under windows use times new roman font
+if os.name == 'nt':
+    plt.rcParams["font.family"] = "Times New Roman"
 
-    funeral_data = data[data['Standardized_Category'] == 'Funeral']
 
-    funeral_groupby = funeral_data.groupby(['Parish_Name', 'Year']).sum()
+def make_fig_ax():
+    """Create figure and axes instances to plot on."""
+    return plt.subplots(1, 1, figsize=[10, 6.18])
+
+
+def tabulate_summary(df, tab_name):
+    """"Tabulate expenditure detailed in df."""
+    df = tidy_pds(df)
+    table_path = os.path.join('output', tab_name)
+    with open(table_path, 'w') as f:
+        f.write(df[["Pounds", "Shillings", "Pence"]].to_string())
+
+
+def plot_parishes(data, plot_fn):
+    """Loop over parishes detailed in data and apply plot_fn()."""
+    # Loop over parishes and plot
+    parishes = data.index.get_level_values(0).unique()
+
+    for parish in parishes:
+        fig, ax = make_fig_ax()
+        plot_fn(fig, ax, data, parish)
+
+
+def funeral_costs(data):
+    """
+    Plot the annual funeral expenditure for each parish as a percentage of
+    total annual expenditure.
+    """
+    data = make_year_col(data)
+
+    funerals = data[data['Standardized_Category'] == 'Funeral']
+
+    funerals_groupby = funerals.groupby(['Parish_Name', 'Year']).sum()
     data_groupby = data.groupby(['Parish_Name', 'Year']).sum()
 
-    funeral_groupby = df.total_from_pds(funeral_groupby)
-    data_groupby = df.total_from_pds(data_groupby) 
+    funerals_groupby = total_from_pds(funerals_groupby)
+    data_groupby = total_from_pds(data_groupby) 
 
-    percent_on_funeral = (funeral_groupby.Total / data_groupby.Total).dropna() * 100
+    funeral_expenditure = (funerals_groupby.Total
+                           / data_groupby.Total).dropna() * 100
 
-    # Loop over parishes and plot
-    parishes = funeral_groupby.index.levels[0]
-    for parish in parishes:
-        fig, ax = plt.subplots(1, 1, figsize=[10, 5])
+    plot_parishes(funeral_expenditure, funeral_costs_plot)
 
-        ax.plot(percent_on_funeral.loc[parish].reset_index().Year,
-                percent_on_funeral.loc[parish])
-
-        ax.set_title(parish + ': funeral expenditure as a percentage of total expenditure.')
-        ax.set_xlabel('Year')
-        ax.set_ylabel('% Spending on funerals')
-
-        fig.tight_layout()
-        file_name = os.path.join(r'output', '{}_funeral_expenditure.png'.format(parish))
-        fig.savefig(file_name, format='png', bbox_inches='tight')
-
-    funeral_groupby = df.tidy_pds(funeral_groupby)
-    table_name = os.path.join('output', 'funeral_expenditure.txt')
-    with open(table_name, 'w') as f:
-        f.write(funeral_groupby[["Pounds", "Shillings", "Pence"]].to_string())
+    tabulate_summary(funerals_groupby, 'funeral_costs.txt')
 
 
-def primary_category_spends(data):
+def primary_categories(data):
     """
     Plot the total expenditure for each parish, grouping by primary category.
     """
-    groupby = data.groupby(['Parish_Name', 'Primary_category']).sum()
+    category_spends = data.groupby(['Parish_Name', 'Primary_category']).sum()
 
-    groupby = df.total_from_pds(groupby)
+    category_spends = total_from_pds(category_spends)
 
     # Sort within groups on total expenditure
-    g = groupby.groupby(level=0, group_keys=False)
-    groupby = g.apply(lambda x: x.sort_values(by="Total", ascending=False))
+    g = category_spends.groupby(level=0, group_keys=False)
+    category_spends = g.apply(lambda x: x.sort_values(by="Total",
+                                                      ascending=False))
 
-    # Loop over parishes and plot
-    parishes = groupby.index.levels[0]
-    for parish in parishes:
-        fig, ax = plt.subplots(1, 1, subplot_kw=dict(aspect="equal"), figsize=[10, 5])
+    plot_parishes(category_spends, primary_categories_plot)
 
-        patches, texts, autotexts = ax.pie(groupby.loc[parish, 'Total'],
-                                           labels=None,
-                                           autopct='%1.f%%',
-                                           pctdistance=1.15)
-
-        ax.set_title(parish)
-        ax.set_ylabel('')
-        ax.legend(labels=groupby.loc[parish].index,
-                  loc="center left",
-                  bbox_to_anchor=(1, 0, 0.5, 1),
-                  title="Expenditure by primary category")
-
-        fig.tight_layout()
-        file_name = os.path.join(r'output', '{}_primary_category.png'.format(parish))
-        fig.savefig(file_name, format='png', bbox_inches='tight')
-
-    groupby = df.tidy_pds(groupby)
-    table_name = os.path.join('output', 'primary_category.txt')
-    with open(table_name, 'w') as f:
-        f.write(groupby[["Pounds", "Shillings", "Pence"]].to_string())
+    tabulate_summary(category_spends, 'primary_categories.txt')
 
 
-def total_annual_spends(data):
+def annual_total(data):
     """
     Plot the total annual expenditure for each parish.
     """
-    data = df.make_year_col(data)
+    data = make_year_col(data)
 
     groupby = data.groupby(['Parish_Name', 'Year']).sum()
-    groupby = df.total_from_pds(groupby)
+    groupby = total_from_pds(groupby)
 
-    # Loop over parishes and plot
-    parishes = groupby.index.levels[0]
-    for parish in parishes:
-        fig, ax = plt.subplots(1, 1, figsize=[10, 5])
+    plot_parishes(groupby, annual_total_plot)
 
-        ax.plot(groupby.loc[parish].reset_index().Year,
-                groupby.loc[parish, 'Total'])
+    tabulate_summary(groupby, 'total_expenditure.txt')
 
-        ax.set_title(parish + ': total annual expenditure')
-        ax.set_xlabel('Year')
-        ax.set_ylabel('Expenditure in pence')
-        fig.tight_layout()
 
-        file_name = os.path.join(r'output', '{}_total_expenditure.png'.format(parish))
-        fig.savefig(file_name, format='png')
+def savefig(fig, plot_base, parish, **kwargs):
+    fig.tight_layout()
+    file_name = os.path.join('output', '{}_{}.png'.format(plot_base, parish))
+    fig.savefig(file_name, format='png', **kwargs)
 
-    groupby = df.tidy_pds(groupby)
-    table_name = os.path.join('output', 'total_expenditure.txt')
-    with open(table_name, 'w') as f:
-        f.write(groupby[["Pounds", "Shillings", "Pence"]].to_string())
+
+def funeral_costs_plot(fig, ax, data, parish):
+    ax.plot(data.loc[parish].reset_index().Year,
+            data.loc[parish])
+
+    ax.set_title('{}: funeral expenditure as a '
+                 'percentage of total expenditure.'.format(parish))
+    ax.set_xlabel('Year')
+    ax.set_ylabel('% Spending on funerals')
+
+    savefig(fig, 'funeral_expenditure', parish, bbox_inches='tight')
+
+
+def primary_categories_plot(fig, ax, data, parish):
+    patches, texts, autotexts = ax.pie(data.loc[parish, 'Total'],
+                                       labels=None,
+                                       autopct='%1.f%%',
+                                       pctdistance=1.15)
+
+    ax.set_title(parish)
+    ax.set_ylabel('')
+    ax.legend(labels=data.loc[parish].index,
+              loc="center left",
+              bbox_to_anchor=(1, 0, 0.5, 1),
+              title="Expenditure by primary category")
+
+    savefig(fig, 'primary_category', parish, bbox_inches='tight')
+
+
+def annual_total_plot(fig, ax, data, parish):
+    ax.plot(data.loc[parish].reset_index().Year, data.loc[parish, 'Total'])
+
+    ax.set_title(parish + ': total annual expenditure')
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Expenditure in pence')
+
+    savefig(fig, 'total_expenditure', parish, bbox_inches='tight')
 
