@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
 
 """
-Run this script to generate all the plots for the latest version of CWAs_F.accdb.
+Run this script to generate all outputs for latest data.
 
-Running this script will overwrite all the plots saved in the output/ directory, so do be
-careful! This script and all the associated python scripts will never alter CWAs_F.accdb.
+Running this script will overwrite all the output in the output/ directory.
+This script and all subsequent scripts will never alter the accdb file.
 """
 
 from utils.read_data import accdb2pkl
@@ -18,4 +18,3 @@ if __name__ == "__main__":
     plot.annual_funeral_spends(data)
     plot.primary_category_spends(data)
     plot.total_annual_spends(data)
-
