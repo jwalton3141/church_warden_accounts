@@ -6,7 +6,6 @@ import os
 from utils.df_tools import total_from_pds, tidy_pds, make_year_col
 
 
-plt.style.use('seaborn')
 plt.rcParams['text.usetex'] = False
 
 # If running under windows use times new roman font

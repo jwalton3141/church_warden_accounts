@@ -27,10 +27,11 @@ def read_accdb(file_path):
 
 def accdb2pkl(file_path=None):
     """Load the accdb file and save as a pickled dictionary."""
-    proj_home = path.dirname(path.realpath(__file__))
+    proj_home = path.dirname(path.dirname(path.realpath(__file__)))
+ 
     if not file_path:
-        file_path = path.join(path.dirname(proj_home), 'CWAs_F.accdb')
-
+        file_path = path.join(path.dirname(proj_home), 'CWAs_Current_April.accdb')
+      
     # Read accdb file in and store as a dictionary
     accdb = read_accdb(file_path)
 
