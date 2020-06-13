@@ -38,7 +38,7 @@ def get_inputs():
 
 
 def get_row_inputs():
-    """Parse user input where each entry is given as pounds,shillings,pence."""
+    """Parse user input where each entry is given as pounds, shillings, pence."""
     # Create empty lists to store data
     data = {'Pounds': [],
             'Shillings': [],
