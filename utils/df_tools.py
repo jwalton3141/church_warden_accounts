@@ -5,6 +5,7 @@ with the Disbursements dataset.
 
 import pandas as pd
 
+
 def make_year_col(data):
     """Create a 'Year' column from data's 'Date' column."""
     data['Year'] = data['Date'].map(lambda x: x.year)
@@ -21,10 +22,11 @@ def total_from_pds(data):
 
 def tidy_pds(data):
     """Tidy up 'Pounds', 'Shillings' and 'Pence columns."""
+    # Make sure the columns are ints
     if isinstance(data, pd.core.frame.DataFrame):
-        data = data.astype({"Pounds": int,
-                            "Shillings": int,
-                            "Pence": int})
+        data = data.astype({'Pounds': int,
+                            'Shillings': int,
+                            'Pence': int})
 
     # Convert pence to shillings
     data.Shillings += data.Pence // 12
