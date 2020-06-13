@@ -2,3 +2,4 @@
 *.bat
 *.png
 *.txt
+__pycache__
