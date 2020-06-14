@@ -8,7 +8,7 @@ This script and all subsequent scripts will never alter the accdb file.
 """
 
 from utils.read_data import accdb2pkl
-import disbursements as disb
+import utils.plot as plot
 
 
 def main():
@@ -19,10 +19,10 @@ def main():
 
 
 def plot_disbursements(data):
-    disb.funeral_costs(data)
-    disb.primary_categories(data)
-    disb.annual_total(data)
-    disb.perambulation_costs(data)
+    plot.funeral_costs(data)
+    plot.primary_categories(data)
+    plot.annual_total(data)
+    plot.perambulation_costs(data)
 
 
 if __name__ == "__main__":
