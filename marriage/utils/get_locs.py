@@ -4,7 +4,6 @@
 
 import pandas as pd
 import numpy as np
-import os.path as path
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -12,7 +11,13 @@ from selenium.webdriver.common.keys import Keys
 def selenium_lookup(parishes):
     """Look up the latitude and longitude of the parishes."""
     # Get chrome up and running
-    driver = webdriver.Chrome()
+    if os.name == 'nt':
+        # Point to chromedriver explicitly on windows
+        driver = webdriver.Chrome('C:\Program Files\chromedriver')
+    else:
+        # chromedriver added to $PATH on linux
+        driver = webdriver.Chrome()
+
     # Wait up to 10 seconds for things to appear
     driver.implicitly_wait(10)
     # Navigate to map tool
@@ -81,7 +86,8 @@ def tidy_txt(txt):
 def fill_empties(df, parishes):
     """Add in locations which couldn't be found as NANs."""
     # Boolean array which indicates whether an array was found or not
-    located = np.array([np.any(df.Title.str.contains(parish)) for parish in parishes])
+    located = np.array([np.any(df.Title.str.contains(parish, regex=False))
+                        for parish in parishes])
 
     # Extract the locations which couldn't be found
     df_lost = pd.DataFrame({'Title': parishes[~located]})
@@ -93,7 +99,7 @@ def fill_empties(df, parishes):
     # Append missing parishes
     df = df.append(df_lost, ignore_index=True)
     # Sort alphabetically
-    df = df.sort_values('Title', ignore_index=True)
+    df = df.sort_values('Title')
 
     return df
 
