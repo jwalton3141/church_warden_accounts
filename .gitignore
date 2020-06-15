@@ -3,3 +3,4 @@
 *.png
 *.txt
 __pycache__
+*.xlsx
