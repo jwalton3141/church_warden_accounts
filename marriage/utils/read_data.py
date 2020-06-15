@@ -7,6 +7,7 @@ import numpy as np
 import os
 import os.path as path
 import re
+import sys
 
 from get_locs import selenium_lookup
 
@@ -112,7 +113,7 @@ def update_lookup(data):
             df = df.append(new_locs, ignore_index=True)
 
             # Sort alphabetically
-            df = df.sort_values('Title', ignore_index=True)
+            df = df.sort_values('Title')
 
             # Write lookup table
             df.to_excel(path_to_table)
