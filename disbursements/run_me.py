@@ -1,28 +1,24 @@
 #! /usr/bin/env python3
 
-"""
-Run this script to generate all outputs for latest data.
+"""Run this script to generate all outputs for latest data."""
 
-Running this script will overwrite all the output in the output/ directory.
-This script and all subsequent scripts will never alter the accdb file.
-"""
-
-from utils.read_data import accdb2pkl
-import utils.plot as plot
+from utils.read_data import accdb2pkl, load_pkl_accdb
+import plot.make
+import plot.standards
 
 
 def main():
     accdb = accdb2pkl()
 
-    disbursements = accdb["Disbursements"]
-    plot_disburements(disbursements)
+    data = accdb["Disbursements"]
 
+    plot.standards.primary_categories(data)
+    plot.standards.annual_total(data)
 
-def plot_disbursements(data):
-    plot.funeral_costs(data)
-    plot.primary_categories(data)
-    plot.annual_total(data)
-    plot.perambulation_costs(data)
+    plot.make.custom(data, 'Standardized_Category', 'Funeral')
+    plot.make.custom(data, 'Standardized_Category', 'Perambulation')
+    plot.make.custom(data, 'Standardized_Category', 'Book of Common Prayer')
+    plot.make.custom(data, 'Standardized_Category', 'Sermons')
 
 
 if __name__ == "__main__":

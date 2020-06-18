@@ -72,8 +72,11 @@ def load_pkl_accdb(pkl_path=None):
     """Load and return the pickled accdb dictionary."""
     if not pkl_path:
         # Construct path to data directory
-        data_dir_path = path.join(path.dirname(path.realpath(__file__)),
-                                  'data')
+        data_dir_path = path.join(
+                            path.dirname(
+                            path.dirname(
+                                path.realpath(__file__))),
+                            'data')
         # Get path to file
         pkl_path = path.join(data_dir_path, 'accdb.pkl')
 
