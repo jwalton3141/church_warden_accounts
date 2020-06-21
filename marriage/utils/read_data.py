@@ -12,7 +12,7 @@ import sys
 from get_locs import selenium_lookup
 
 
-def load_data(file_name=None):
+def read(file_name=None):
     """Load data."""
     # Get the path to the data directory
     data_dir_path = path.join(path.dirname(
@@ -26,7 +26,7 @@ def load_data(file_name=None):
         # Get files with spreadsheet file extenstion
         spreadsheets = [file for file in files if file.endswith('.xlsx')]
 
-        # Prompt user to ensure data is located where it should be
+        # Prompt user if data is not stored correctly
         if len(spreadsheets) > 1:
             print("{} spreadsheets found in {}. Ensure directory only contains 1 "
                   "spreadsheet.".format(len(spreadsheets), data_dir_path))
@@ -45,10 +45,13 @@ def load_data(file_name=None):
     # Tidy data
     data = tidy_data(data)
 
-    # Add locations to data
-    data = add_locs(data)
+    # Count occurances of pairs
+    pairs, counts = np.unique(data, axis=0, return_counts=True)
 
-    return data
+    # Add locations to data
+    locs = lookup_locs(data)
+
+    return pairs, counts, locs
 
 
 def tidy_data(data):
@@ -69,14 +72,7 @@ def tidy_data(data):
     return np.vstack([np.array(x), np.array(y)]).T
 
 
-def add_locs(data):
-    """Append location data to Parish names."""
-    # Make sure our lookup table is up to date
-    update_lookup(data)
-    return data
-
-
-def update_lookup(data):
+def lookup_locs(data):
     """Get location data for each parish."""
     # Get list of parishes referenced
     parishes = np.unique(data)
@@ -118,6 +114,14 @@ def update_lookup(data):
             # Write lookup table
             df.to_excel(path_to_table)
 
+    # Drop locations outside UK
+    df.drop(df.index[df['Grid Reference'] == 'Not in UK'], inplace=True)
+
+    # Drop locations with missing longitude or latitude
+    df.drop(df.index[df.Longitude.isna() | df.Latitude.isna()], inplace=True)
+
+    return df
+
 
 if __name__ == "__main__":
-    load_data()
+    read()
