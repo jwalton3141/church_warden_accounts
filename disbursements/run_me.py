@@ -2,7 +2,7 @@
 
 """Run this script to generate all outputs for latest data."""
 
-from utils.read_data import accdb2pkl, load_pkl_accdb
+from utils.read_data import accdb2pkl
 import plot.make
 import plot.standards
 
