@@ -6,6 +6,20 @@ import os
 from utils.df_tools import total_from_pds, tidy_pds, make_year_col
 from plot.pretty import make_fig_ax, savefig
 
+plt.style.use('seaborn')
+
+
+# Ensure categories are represented by the same colour in each plot
+categories = ['Bells',
+              'Charity',
+              'Churchyard',
+              'Church Interior',
+              'Church Structure',
+              'Communion Bread and Wine',
+              'Miscellaneous',
+              'Parish Administration']
+category_colours = dict(zip(categories, plt.cm.tab10.colors[:len(categories)]))
+
 
 def annual_total(data):
     """
@@ -49,11 +63,15 @@ def primary_categories(data):
 
 def __primary_categories_plot(fig, ax, data, parish):
     """Produce pie chart of parish spending by primary category."""
+    # Display categories alphatbetically
+    data.sort_index(inplace=True)
+    colors = [category_colours[v] for v in data.loc[parish].index]
     # Plot pie on ax
     patches, texts, autotexts = ax.pie(data.loc[parish, 'Total'],
                                        labels=None,
                                        autopct='%1.f%%',
-                                       pctdistance=1.15)
+                                       pctdistance=1.15,
+                                       colors=colors)
 
     # Title, labels and legend
     ax.set_title(parish)
