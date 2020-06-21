@@ -2,8 +2,9 @@
 
 "Modules to automate the lookup of pasish locations."""
 
-import pandas as pd
 import numpy as np
+import os
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
