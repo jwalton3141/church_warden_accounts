@@ -1,8 +1,4 @@
 Create a requirements.txt (test by running in a virtualenv).
 
-Match colours for expenditure breakdown between parishes.
-
 St Gerory Cum Martin (or something like that) wants to be hyphenated in plot titles.
 
-Create function which plots annual expenditure of 'x' for all parishes, in category 'y',
-eg. something like: plot_expenditure('pulpit', 'Primary_category')
