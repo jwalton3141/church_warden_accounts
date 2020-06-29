@@ -48,10 +48,10 @@ def read(file_name=None):
     # Count occurances of pairs
     pairs, counts = np.unique(data, axis=0, return_counts=True)
 
-    # Add locations to data
-    locs = lookup_locs(data)
+    # Get locations 
+    locations = lookup_locs(data)
 
-    return pairs, counts, locs
+    return pairs, counts, locations
 
 
 def tidy_data(data):
