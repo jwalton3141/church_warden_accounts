@@ -9,11 +9,12 @@ import os.path as path
 import re
 import sys
 
-from get_locs import selenium_lookup
+from utils.get_locs import selenium_lookup
 
 
-def read(file_name=None):
-    """Load data."""
+def read_population(file_name=None):
+    """Load the population changes data."""
+
     # Get the path to the data directory
     data_dir_path = path.join(path.dirname(
                               path.dirname(
@@ -23,27 +24,43 @@ def read(file_name=None):
     if not file_name:
         # Get all the files in the data directory
         files = os.listdir(data_dir_path)
-        # Get files with spreadsheet file extenstion
-        spreadsheets = [file for file in files if file.endswith('.xlsx')]
 
-        # Prompt user if data is not stored correctly
-        if len(spreadsheets) > 1:
-            print("{} spreadsheets found in {}. Ensure directory only contains 1 "
-                  "spreadsheet.".format(len(spreadsheets), data_dir_path))
-            sys.exit(1)
-        elif len(spreadsheets) == 0:
-            print("No spreadsheets found in {0}. Ensure {0} contains spreadsheet "
-                  "file.".format(data_dir_path))
-            sys.exit(1)
+        if 'Population_Change.xlsx' in files:
+            file_name = path.join(data_dir_path, 'Population_Change.xlsx')
+        else:
+            print("Could not find spreadsheet with name "
+                  "'Population_Change.xlsx' in folder "
+                  "{}.".format(data_dir_path))
 
-        # Construct path to spreadsheet
-        file_name = path.join(data_dir_path, spreadsheets[0])
+    data = pd.read_excel(file_name, sheet_name=None, index_col=0)['Sheet1']
+
+    return data
+
+
+def read_marriages(file_name=None):
+    """Load marriages data."""
+    # Get the path to the data directory
+    data_dir_path = path.join(path.dirname(
+                              path.dirname(
+                              path.realpath(__file__))),
+                              'data')
+
+    if not file_name:
+        # Get all the files in the data directory
+        files = os.listdir(data_dir_path)
+
+        if 'Marriage_Migration.xlsx' in files:
+            file_name = path.join(data_dir_path, 'Marriage_Migration.xlsx')
+        else:
+            print("Could not find spreadsheet with name "
+                  "'Marriage_Migration.xlsx' in folder "
+                  "{}.".format(data_dir_path))
 
     # Load data
     data = pd.read_excel(file_name, sheet_name=None)
 
     # Tidy data
-    data = tidy_data(data)
+    data = tidy_marriages(data)
 
     # Count occurances of pairs
     pairs, counts = np.unique(data, axis=0, return_counts=True)
@@ -54,7 +71,7 @@ def read(file_name=None):
     return pairs, counts, locations
 
 
-def tidy_data(data):
+def tidy_marriages(data):
     """Extract the groom and bride parish from spreadsheet and clean."""
     # Extract parsishes of Groom (dropping nans and empty entries)
     x = [list(values['Parish']) for values in data.values() if np.any(values['Parish'])]
@@ -124,4 +141,4 @@ def lookup_locs(data):
 
 
 if __name__ == "__main__":
-    read()
+    read_marriages()
