@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 
+"""This is an absolute state please sort it."""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import os
