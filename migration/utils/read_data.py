@@ -41,6 +41,7 @@ def load_population():
 
 
 def load_marriages():
+    """Load and prep marriage data."""
     # Load data
     data = read_excel('Marriage_Migration', {'sheet_name': None})
 
@@ -54,6 +55,11 @@ def load_marriages():
     locations = lookup_locs(data)
 
     return pairs, counts, locations
+
+
+def load_tax():
+    """Load tax data."""
+    return read_excel('Rate_Payers_Excel.xlsx')
 
 
 def tidy_marriages(data):
