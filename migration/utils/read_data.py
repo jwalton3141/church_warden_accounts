@@ -32,7 +32,7 @@ def read_excel(file_name, **kwargs):
                                                            data_dir_path)
 
     # Read and return
-    return pd.read_excel(file_name, **kwargs)
+    return pd.read_excel(path.join(data_dir_path, file_name), **kwargs)
 
 
 def load_population():
