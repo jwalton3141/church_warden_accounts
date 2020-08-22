@@ -8,14 +8,6 @@ import plot.standards
 
 
 def main():
-    """
-    Generate all outputs for latest data
-
-    Returns
-    -------
-    None.
-
-    """
     accdb = accdb2pkl()
 
     data = accdb["Disbursements"]
