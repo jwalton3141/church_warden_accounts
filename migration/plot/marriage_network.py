@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 
+"""Draft."""
+
 import matplotlib.pyplot as plt
 
 from utils.read_data import read
