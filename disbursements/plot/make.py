@@ -32,7 +32,8 @@ def __custom_parish(data, category, entry):
 def __custom_total(data, category, entry):
     """Plot expenditure of entry in category over all parishes."""
     # Compute expenditure
-    entry_total, entry_percent = __compute_expenditure(data, category, entry, by_parish=False)
+    entry_total, entry_percent = __compute_expenditure(data, category, entry,
+                                                       by_parish=False)
 
     __plot_overall(entry_total.Total, entry)
     __plot_overall_percent(entry_percent, entry)
@@ -99,8 +100,6 @@ def __plot_overall_percent(data, entry):
             'overall',
             entry,
             bbox_inches='tight')
-
-
 
 
 def __plot_parishes(data, entry, plot_fn):
