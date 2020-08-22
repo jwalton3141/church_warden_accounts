@@ -59,8 +59,10 @@ def load_marriages():
 
 def load_tax():
     """Load tax data."""
-    return read_excel('Rate_Payers_Excel.xlsx')
-
+    df = read_excel('Rate_Payers_Excel.xlsx')
+    # Drop Empty columns
+    df = df.loc[:, [isinstance(col, int) for col in df.columns]]
+    return df
 
 def tidy_marriages(data):
     """Extract the groom and bride parish from spreadsheet and clean."""
