@@ -38,6 +38,33 @@ def __custom_total(data, category, entry):
     __plot_overall_percent(entry_percent, entry)
 
 
+def __compute_expenditure(data, category, entry, by_parish=True):
+    """Compute total and proportional expenditure."""
+    data = data.copy()
+    data = make_year_col(data)
+
+    # Extract entry from category
+    entry_data = data[data[category] == entry]
+
+    # Sum expenditure by year and parish
+    if by_parish:
+        entry_groupby = entry_data.groupby(['Parish_Name', 'Year']).sum()
+        data_groupby = data.groupby(['Parish_Name', 'Year']).sum()
+    else:
+        entry_groupby = entry_data.groupby(['Year']).sum()
+        data_groupby = data.groupby(['Year']).sum()
+
+    # Express expenditure in pence
+    entry_groupby = total_from_pds(entry_groupby)
+    data_groupby = total_from_pds(data_groupby)
+
+    entry_total = entry_groupby.Total
+    # Compute expenditure as percentage of total annual expenditure
+    entry_percent = (entry_total / data_groupby.Total).dropna() * 100
+
+    return entry_groupby, entry_percent
+
+
 def __plot_overall(data, entry):
     fig, ax = make_fig_ax()
     __plot(ax, data)
@@ -74,31 +101,6 @@ def __plot_overall_percent(data, entry):
             bbox_inches='tight')
 
 
-def __compute_expenditure(data, category, entry, by_parish=True):
-    """Compute total and proportional expenditure."""
-    data = data.copy()
-    data = make_year_col(data)
-
-    # Extract entry from category
-    entry_data = data[data[category] == entry]
-
-    # Sum expenditure by year and parish
-    if by_parish:
-        entry_groupby = entry_data.groupby(['Parish_Name', 'Year']).sum()
-        data_groupby = data.groupby(['Parish_Name', 'Year']).sum()
-    else:
-        entry_groupby = entry_data.groupby(['Year']).sum()
-        data_groupby = data.groupby(['Year']).sum()
-
-    # Express expenditure in pence
-    entry_groupby = total_from_pds(entry_groupby)
-    data_groupby = total_from_pds(data_groupby)
-
-    entry_total = entry_groupby.Total
-    # Compute expenditure as percentage of total annual expenditure
-    entry_percent = (entry_total / data_groupby.Total).dropna() * 100
-
-    return entry_groupby, entry_percent
 
 
 def __plot_parishes(data, entry, plot_fn):
