@@ -8,7 +8,7 @@ import os
 import os.path as path
 import re
 
-from utils.get_locs import selenium_lookup
+from migration.utils.get_locs import selenium_lookup
 
 
 def read_excel(file_name, **kwargs):
@@ -62,7 +62,7 @@ def load_tax():
     df = read_excel('Rate_Payers_Excel.xlsx')
 
     # Make all column names strings
-    colnames = [str(col) for col in data.columns]
+    colnames = [str(col) for col in df.columns]
     df.columns = colnames
 
     # Drop empty columns
