@@ -56,6 +56,30 @@ def write_table(output_path, df):
         f.write(df.rename_axis(columns="%").to_string(na_rep='-'))
 
 
+def make_plots(output_path, df):
+    """Plot change in percentages of tax payers."""
+    fig, ax = make_fig_ax()
+
+    markers = ['o', '^', 'x', 'D', '.']
+
+    for row, marker in zip(df.iterrows(), markers):
+        ax.plot(range(df.shape[1] - sum(~row[1].isnull()), df.shape[1]),
+                row[1][~row[1].isnull()],
+                marker=marker,
+                label=row[0])
+
+    ax.set_xticks(range(df.shape[1]))
+    ax.set_xticklabels(df.columns)
+
+    ax.set_ylabel('Percentage of remaining tax payers')
+    ax.set_xlabel('Year')
+    ax.legend().set_title('Tax Cohort')
+
+    fig.savefig(path.join(output_path, 'tax_payers.png'),
+                format='png',
+                bbox_inches='tight')
+
+
 if __name__ == "__main__":
     # Load rate payers data
     data = load_tax()
@@ -67,3 +91,6 @@ if __name__ == "__main__":
 
     # Write output to table
     write_table(output_path, df)
+
+    # Make plots
+    make_plots(output_path, df)
