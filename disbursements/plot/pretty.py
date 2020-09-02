@@ -22,11 +22,13 @@ def savefig(fig, plot_base, parish, entry=None, **kwargs):
 
     if entry:
         # Directory to save plots to
-        save_dir = path.join(save_dir, entry)
+        save_dir = path.join(save_dir, 'custom', entry)
+    else:
+        save_dir = path.join(save_dir, 'standards')
 
-        # Create output directory if it doesn't exist
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
+    # Create output directory if it doesn't exist
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
 
     # Construct file name of plot
     file_name = os.path.join(save_dir,

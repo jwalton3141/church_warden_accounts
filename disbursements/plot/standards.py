@@ -106,7 +106,7 @@ def __annual_total_plot(fig, ax, data, parish):
 def __tabulate_summary(df, tab_name):
     """"Tabulate expenditure detailed in df."""
     df = tidy_pds(df)
-    table_path = os.path.join('output', tab_name)
+    table_path = os.path.join('output', 'standards', tab_name)
 
     with open(table_path, 'w') as f:
         f.write(df[["Pounds", "Shillings", "Pence"]].to_string())

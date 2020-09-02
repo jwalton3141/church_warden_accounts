@@ -165,6 +165,7 @@ def __tabulate_summary(df, entry):
     """"Tabulate expenditure detailed in df."""
     df = tidy_pds(df)
     table_path = os.path.join('output',
+                              'custom',
                               entry,
                               '{}_expenditure.txt'.format(entry))
 
