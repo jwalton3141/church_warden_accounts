@@ -60,9 +60,15 @@ def load_marriages():
 def load_tax():
     """Load tax data."""
     df = read_excel('Rate_Payers_Excel.xlsx')
-    # Drop Empty columns
-    df = df.loc[:, [isinstance(col, int) for col in df.columns]]
+
+    # Make all column names strings
+    colnames = [str(col) for col in data.columns]
+    df.columns = colnames
+
+    # Drop empty columns
+    df = df.loc[:, ~df.columns.str.startswith('Unnamed')]
     return df
+
 
 def tidy_marriages(data):
     """Extract the groom and bride parish from spreadsheet and clean."""
